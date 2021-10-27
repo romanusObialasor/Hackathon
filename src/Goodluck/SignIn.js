@@ -5,15 +5,15 @@ import { app } from "./base";
 const SignIn = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [cKey, setCKey] = useState("");
+  const [comkey, setComkey] = useState("");
   const history = useHistory();
 
   const signIn = async () => {
     await app.auth().signInWithEmailAndPassword(email, password);
     setEmail("");
     setPassword("");
-    setCKey("");
-    localStorage.setItem("comKey", cKey);
+    setComkey("");
+    localStorage.setItem("comkey", comkey);
     history.push("/user");
   };
   return (
@@ -40,9 +40,9 @@ const SignIn = () => {
         <input
           type="text"
           placeholder="Enter EmaCompany's key"
-          value={cKey}
+          value={comkey}
           onChange={(e) => {
-            setCKey(e.target.value);
+            setComkey(e.target.value);
           }}
         />
         <button onClick={signIn}>SignIn</button>
