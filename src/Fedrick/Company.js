@@ -4,6 +4,8 @@ import { Input } from "antd";
 import logo from "./logo.png";
 import { useHistory } from "react-router";
 import { Link } from "react-router-dom";
+import { app } from "../base";
+import firebase from "firebase";
 import {
   AiFillEye,
   AiFillEyeInvisible,
@@ -20,57 +22,118 @@ const Register = () => {
   const OnToggle = () => {
     setShow(!show);
   };
+  const [image, setImage] = useState("");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const postData = async () => {
+    const authUser = await app
+      .auth()
+      .createUserWithEmailAndPassword(email, password);
+    console.log(authUser);
+    if (authUser) {
+      await app.firestore().collection("Register").doc(authUser.user.uid).set({
+        name: name,
+        email: email,
+        image: image,
+        createdBy: authUser.user.uid,
+        createdAt: firebase.firestore.FieldValue.serverTimestamp(),
+      });
+      setName("");
+      setPassword("");
+      setEmail("");
+      setImage("");
+    }
+  };
+  const displayImage = (e) => {
+    const file = e.target.files[0];
+    const fileRef = URL.createObjectURL(file);
+    setImage(fileRef);
+  };
   return (
     <Container>
       <Form>
         <Left>
-          <Inner>
-            <InnerWrapper>
-              <Logo src="/images/10.png" />
-              <Line />
-              <Text>
-                <Header>Welcome to simple</Header>
-                <Content>
-                  Sign in with your company's key to get assess to it's projects
-                </Content>
-              </Text>
-              <Auth>
-                Already have an account <br />
-                <span onClick={onChn}>Sign in</span>
-              </Auth>
-            </InnerWrapper>
-          </Inner>
+          {image === "" ? (
+            <Inner>
+              <InnerWrapper>
+                <Logo src="/images/10.png" />
+                <Line />
+                <Text>
+                  <Header>Welcome to simple</Header>
+                  <Content>
+                    Sign in with your company's key to get assess to it's
+                    projects
+                  </Content>
+                </Text>
+                <Auth>
+                  Already have an account <br />
+                  <span onClick={onChn}>Sign in</span>
+                </Auth>
+              </InnerWrapper>
+            </Inner>
+          ) : (
+            <Image src={image} />
+          )}
         </Left>
         <Right>
           <Wrapper>
             <Head>Register Company</Head>
             <Inputs>
               <InputHolder>
-                <ImageLabel>Upload image</ImageLabel>
+                <ImageLabel htmlFor="img">Upload image</ImageLabel>
                 <Inputer
                   type="file"
+                  id="img"
                   style={{
                     display: "none",
                   }}
+                  onChange={displayImage}
                 />
               </InputHolder>
               <InputHolder>
                 <Label>Company name</Label>
-                <Inputer placeholder="Enter company's name" />
+                <Inputer
+                  placeholder="Enter company's name"
+                  placeholder="name"
+                  value={name}
+                  onChange={(e) => {
+                    setName(e.target.value);
+                  }}
+                />
               </InputHolder>
               <InputHolder>
                 <Label>Email address</Label>
-                <Inputer placeholder="Enter company's email" />
+                <Inputer
+                  placeholder="Enter company's email"
+                  placeholder="email"
+                  value={email}
+                  onChange={(e) => {
+                    setEmail(e.target.value);
+                  }}
+                />
               </InputHolder>
               <InputHolder>
                 <Label>Set Password</Label>
                 <PasswordSecret>
                   {!show ? (
-                    <PasswordInputer placeholder="Enter your password" />
+                    <PasswordInputer
+                      placeholder="Enter your password"
+                      placeholder="password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
+                    />
                   ) : (
                     <PasswordInputer
                       placeholder="Enter your password"
                       type="password"
+                      placeholder="password"
+                      value={password}
+                      onChange={(e) => {
+                        setPassword(e.target.value);
+                      }}
                     />
                   )}
                   {show ? (
@@ -80,12 +143,8 @@ const Register = () => {
                   )}
                 </PasswordSecret>
               </InputHolder>
-              <InputHolder>
-                <Label>Company's key</Label>
-                <Inputer placeholder="Enter your company's Key" />
-              </InputHolder>
             </Inputs>
-            <Sign>
+            <Sign onClick={postData}>
               <span>Register</span>
               <Arrow />
             </Sign>
@@ -103,6 +162,12 @@ const Register = () => {
 };
 
 export default Register;
+
+const Image = styled.img`
+  height: 90%;
+  object-fit: contain;
+  width: 90%;
+`;
 
 const All = styled.div`
   display: none;
