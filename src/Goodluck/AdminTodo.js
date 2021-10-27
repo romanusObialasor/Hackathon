@@ -4,8 +4,8 @@ import firebase from "firebase";
 import { useParams } from "react-router-dom";
 
 const AdminTodo = () => {
-  const [data, setData] = useState([]);
   const { id } = useParams();
+  const [data, setData] = useState([]);
 
   const fetchData = async () => {
     const authUser = await app.auth().currentUser;
@@ -27,6 +27,11 @@ const AdminTodo = () => {
         });
     }
   };
+
+  useEffect(() => {
+    fetchData();
+  }, []);
+
   return <div>admintodo</div>;
 };
 
