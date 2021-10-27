@@ -8,6 +8,9 @@ import AdminSetting from "./Judith/Admin/AdminSetting";
 import UserSetting from "./Judith/User/UserSetting";
 import AdminCreateProject from "./Judith/Admin/AdminCreateProject";
 import UserCreateProject from "./Judith/User/UserCreateProject";
+import NewUser from "./Esther/UserSign"
+import Company from "./Fedrick/Company"
+import Admin from "./Fedrick/AdminSignin"
 const App = () => {
   return (
     <BrowserRouter>
@@ -20,9 +23,15 @@ const App = () => {
         <Route exact path="/member" component={Member} />
         <Route exact path="/adminsetting" component={AdminSetting} />
         <Route exact path="/usersetting" component={UserSetting} />
+          <Route exact path="/User" component={NewUser}/>
+     <Route exact path="/companyRegister" component={Company}/>
+     <Route exact path="/admin" component={Admin}/>
       </Switch>
     </BrowserRouter>
   );
 };
 
-export default App;
+
+
+
+export default App
